@@ -3,8 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <title>Laundry Service</title>
-  <link rel="stylesheet" href="style5.css">
-  
+  <style>
+  * {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 40px;
+  background: #2a8cff;
+}
+
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 20px;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #333;
+}
+
+.hero {
+  display: flex;
+  padding: 60px;
+  align-items: center;
+}
+
+.hero-left h1 span {
+  color: #2a8cff;
+}
+
+.hero-left button {
+  margin-top: 20px;
+  padding: 12px 20px;
+  background: #2a8cff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+.hero-right img {
+  width: 450px;
+}
+
+.achievements {
+  display: flex;
+  justify-content: space-around;
+  background: #5bbcff;
+  padding: 30px;
+  color: black;
+  font-size: 25px;
+  font-weight: 100;
+}
+
+.booking {
+  display: flex;
+  padding: 40px;
+  gap: 40px;
+}
+
+.services-list, .cart-section {
+  width: 50%;
+}
+
+.service {
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0;
+}
+
+.service button {
+  background: #2a8cff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+}
+
+.cart {
+  border: 1px solid #ccc;
+  padding: 15px;
+}
+
+.book-form input {
+  width: 100%;
+  margin: 8px 0;
+  padding: 8px;
+}
+
+.book-form button {
+  width: 100%;
+  padding: 10px;
+  background: #2a8cff;
+  color: white;
+  border: none;
+}
+
+.quality {
+  display: flex;
+  justify-content: space-around;
+  padding: 40px;
+}
+
+.newsletter {
+  background: #5bbcff;
+  padding: 30px;
+  text-align: center;
+}
+
+.newsletter input {
+  padding: 10px;
+  margin: 5px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-around;
+  padding: 30px;
+  background: #f4f4f4;
+}
+  </style>
 </head>
 <body>
 
@@ -145,7 +267,60 @@
     <p>Instagram | Facebook | Twitter</p>
   </div>
 </footer>
+<script>
+let cart = [];
+let total = 0;
 
-<script src="script.js"></script>
+function scrollToBooking() {
+  document.getElementById("services").scrollIntoView({ behavior: "smooth" });
+}
+
+function addItem(name, price) {
+  cart.push({ name, price });
+  total += price;
+  updateCart();
+}
+
+function updateCart() {
+  const cartItems = document.getElementById("cartItems");
+  cartItems.innerHTML = "";
+
+  cart.forEach((item, index) => {
+    const li = document.createElement("li");
+    li.innerHTML = `${item.name} - ₹${item.price} 
+      <button onclick="removeItem(${index})">Remove</button>`;
+    cartItems.appendChild(li);
+  });
+
+  document.getElementById("total").innerText = total;
+}
+
+function removeItem(index) {
+  total -= cart[index].price;
+  cart.splice(index, 1);
+  updateCart();
+}
+
+// EMAIL JS
+(function(){
+  emailjs.init("YOUR_PUBLIC_KEY");
+})();
+
+function sendEmail() {
+  const params = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    phone: document.getElementById("phone").value,
+    total: total,
+    services: cart.map(i => i.name).join(", ")
+  };
+
+  emailjs.send("YOUR_SERVICE_ID","YOUR_TEMPLATE_ID",params)
+    .then(() => {
+      document.getElementById("msg").innerText =
+        "Thank you For Booking the Service We will get back to you soon!";
+    });
+}
+</script>
 </body>
 </html>
