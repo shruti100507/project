@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registration Form</title>
+    <style>
+        /* Page centering */
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f4f6f8;
+}
+
+/* Form container */
+.form-container {
+    background: #ffffff;
+    padding: 25px;
+    width: 350px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Form elements */
+form h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 15px;
+}
+
+input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+/* Password field */
+.password-wrapper {
+    display: flex;
+    gap: 5px;
+}
+
+.password-wrapper button {
+    padding: 8px;
+    cursor: pointer;
+}
+
+/* Buttons */
+button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background: #007bff;
+    border: none;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+/* Message boxes */
+#error,
+.success {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.error {
+    background-color: #ffe6e6;
+    color: #b30000;
+}
+
+.success {
+    background-color: #e6ffe6;
+    color: #006600;
+}
+
+
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <form id="registrationForm" novalidate>
+        <h2>Create Account</h2>
+
+        <div id="messageBox"></div>
+
+        <label>
+            Full Name
+            <input type="text" id="name" required>
+        </label>
+
+        <label>
+            Email
+            <input type="email" id="email" required>
+        </label>
+
+        <label>
+            Phone Number
+            <input type="text" id="phone" maxlength="10" required>
+        </label>
+
+        <label>
+            Password
+            <div class="password-wrapper">
+                <input type="password" id="password" required>
+                <button type="button" id="togglePassword">Show</button>
+            </div>
+        </label>
+
+        <button type="submit">Register</button>
+    </form>
+</div>
+<script>
+    // Select elements
+const form = document.getElementById("registrationForm");
+const messageBox = document.getElementById("messageBox");
+const togglePasswordBtn = document.getElementById("togglePassword");
+const passwordInput = document.getElementById("password");
+
+// Toggle password visibility
+togglePasswordBtn.addEventListener("click", () => {
+    const isHidden = passwordInput.type === "password";
+    passwordInput.type = isHidden ? "text" : "password";
+    togglePasswordBtn.textContent = isHidden ? "Hide" : "Show";
+});
+
+// Form submission
+form.addEventListener("submit", (e) => {
+    e.preventDefault();
+    messageBox.innerHTML = "";
+
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const password = passwordInput.value;
+
+    const errors = [];
+
+    // Required fields
+    if (!name || !email || !phone || !password) {
+        errors.push("All fields are required.");
+    }
+
+    // Email validation
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        errors.push("Please enter a valid email address.");
+    }
+
+    // Phone number validation
+    if (!/^\d{10}$/.test(phone)) {
+        errors.push("Phone number must be exactly 10 digits.");
+    }
+
+    // Password validation
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    if (!passwordPattern.test(password)) {
+        errors.push(
+            "Password must be at least 8 characters and include uppercase, lowercase, and a number."
+        );
+    }
+
+    // Display messages
+    if (errors.length > 0) {
+        showMessage(errors.join("<br>"), "error");
+    } else {
+        showMessage("Form submitted successfully!", "success");
+        form.reset();
+    }
+});
+
+// Display message helper
+function showMessage(message, type) {
+    messageBox.className = type;
+    messageBox.innerHTML = message;
+}
+
+</script>
+</body>
+</html>
